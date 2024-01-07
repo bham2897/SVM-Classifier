@@ -1,4 +1,4 @@
-# SVM-Classifier-
+# SVM-Classifier
 This Python script is designed to predict stroke diagnoses using a Support Vector Machine (SVM) classifier, integrating key data science libraries. The script begins by importing necessary libraries, such as Pandas for data manipulation, NumPy for numerical operations, scikit-learn for machine learning tasks, and Matplotlib for visualization.
 
 The process commences with loading a preprocessed stroke dataset, Transformed_Stroke_Data.csv. The dataset undergoes a selection process focusing on numeric columns, aligning with the SVM classifier's requirements. The target variable for prediction is identified as 'Diagnosis'.
