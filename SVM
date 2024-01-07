@@ -1,0 +1,57 @@
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.svm import SVC
+from sklearn.metrics import classification_report, roc_curve, auc
+import matplotlib.pyplot as plt
+
+# Load the datasets
+transformed_stroke_data_path = '/Users/divya/Downloads/Transformed_Stroke_Data.csv'
+transformed_stroke_data = pd.read_csv(transformed_stroke_data_path)
+
+# Assuming 'Diagnosis' is the target variable
+target = 'Diagnosis'
+
+# Selecting only numeric columns for simplicity
+numeric_columns = transformed_stroke_data.select_dtypes(include=[np.number]).columns
+X_numeric = transformed_stroke_data[numeric_columns]
+
+# Splitting the data into features (X) and target (y)
+X = X_numeric.drop(target, axis=1)
+y = transformed_stroke_data[target]
+
+# Splitting the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Initializing the Support Vector Machine classifier
+svm_classifier = SVC(kernel='linear', probability=True)
+
+# Training the classifier
+svm_classifier.fit(X_train, y_train)
+
+# Predicting the Test set results
+y_pred = svm_classifier.predict(X_test)
+
+# Getting probabilities for ROC curve
+y_prob = svm_classifier.predict_proba(X_test)[:, 1]
+
+# Calculating the ROC curve and AUC
+fpr, tpr, thresholds = roc_curve(y_test, y_prob)
+roc_auc = auc(fpr, tpr)
+
+# Generating classification report
+class_report = classification_report(y_test, y_pred, target_names=['No Stroke', 'Stroke'])
+
+# Plotting ROC curve
+plt.figure()
+plt.plot(fpr, tpr, color='darkorange', lw=2, label='ROC curve (area = %0.2f)' % roc_auc)
+plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.05])
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('Receiver Operating Characteristic')
+plt.legend(loc="lower right")
+plt.show()
+
+print(class_report)
